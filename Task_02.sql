@@ -65,10 +65,16 @@ ORDER BY inactive DESC;
 --	7. Category with most hours rent in cities begin with 'a'. the same for cities which have '-' in their name. 
 
 
-SELECT DISTINCT ON (cl.city) cl.city, fl.category, (r.return_date-r.rental_date) AS rent_time
+SELECT DISTINCT ON (cl.city) cl.city, fl.category, justify_interval(sum(r.return_date-r.rental_date)) AS rent_time
 FROM customer_list cl 
 JOIN rental r ON r.customer_id = cl.id
 JOIN inventory i ON i.inventory_id = r.inventory_id 
 JOIN film_list fl ON fl.fid = i.film_id
 WHERE (city like 'A%' OR city like '%-%') AND (r.return_date-r.rental_date) IS NOT NULL
+GROUP BY cl.city, fl.category
 ORDER BY city, rent_time DESC;
+
+
+
+
+
